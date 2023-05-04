@@ -10,7 +10,7 @@ from advertisement import advertise
 UNKNOWN_LEADER = 256
 SLEEP_TIME = 10
 
-async def elect_leader():
+async def elect_leader(Threshold, BatteryUsage, myID):
   emit = threading.Thread(target=advertise, args=(myID, BatteryUsage, Threshold, 10,))
   print("Start emitting...")
   emit.daemon = True
@@ -44,7 +44,7 @@ async def main():
   BatteryUsage = 80
 
   while True:
-    leaderID = await elect_leader()
+    leaderID = await elect_leader(Threshold, BatteryUsage, myID)
     PreviousLeader = leaderID
 
     if leaderID == UNKNOWN_LEADER:
