@@ -40,7 +40,7 @@ async def main():
         if PreviousLeader == myID:
             Threshold -=10
   
-  print("The Leader address is : " + str(LeaderName) + " and it's Id : " + str(LeaderID))
+  print("The Leader address is : " + str(LeaderName) + " and it's  Id : " + str(LeaderID))
   time.sleep(30)
 
 

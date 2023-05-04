@@ -136,11 +136,11 @@ class Advertisement(dbus.service.Object):
 
 class TestAdvertisement(Advertisement):
 
-    def __init__(self, bus, index):
+    def __init__(self, bus, index, id, battery, threshold):
         Advertisement.__init__(self, bus, index, 'peripheral')
         self.add_service_uuid('180D')
         self.add_service_uuid('180F')
-        self.add_manufacturer_data(0xffff, [0x00, 0x50])
+        self.add_manufacturer_data(0xffff, [id, battery, threshold])
         self.add_service_data('9999', [0x00, 0x01, 0x02, 0x03, 0x04])
         self.add_local_name('BJPT')
         self.include_tx_power = True
@@ -193,7 +193,7 @@ def advertise(id, batteryUsage, threshold, timeout=0):
     ad_manager = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, adapter),
                                 LE_ADVERTISING_MANAGER_IFACE)
 
-    test_advertisement = TestAdvertisement(bus, 0)
+    test_advertisement = TestAdvertisement(bus, 0, id, batteryUsage, threshold)
 
     mainloop = GObject.MainLoop()
 
