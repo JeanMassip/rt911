@@ -29,25 +29,28 @@ async def main():
       LeaderID = UNKNOWN_LEADER
     else :
       LeaderID = myID
+
     for d in devices:
         if d.name == 'BJPT':
           data = d.details['props']['ManufacturerData'][0xffff]
           id = data[0]
           battery = data[1]
+          if id == LeaderID:
+            Threshold = data[2]
           if battery >= Threshold:
             if id < LeaderID:
               LeaderID = id
               LeaderName = d.address
-              Threshold = data[2]
               print("Threshold is: " + str(Threshold))
     
-    PreviousLeader = LeaderID
-    if LeaderID == myID:
-      BatteryUsage -= 10
-    if PreviousLeader == myID and LeaderID == UNKNOWN_LEADER:
-      LeaderID = myID
-      Threshold -=10
+    if LeaderID == UNKNOWN_LEADER:
+      LeaderID = PreviousLeader
     
+    if PreviousLeader == myID:
+      Threshold -= 10
+
+    PreviousLeader = LeaderID
+
     print("The Leader address is : " + str(LeaderName) + " and it's  Id : " + str(LeaderID))
     print("Battery threshold is : " + str(Threshold))
     print("Current battery: " + str(BatteryUsage))
