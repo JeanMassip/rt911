@@ -136,11 +136,11 @@ class Advertisement(dbus.service.Object):
 
 class TestAdvertisement(Advertisement):
 
-    def __init__(self, bus, index, id, battery, threshold):
+    def __init__(self, bus, index, message):
         Advertisement.__init__(self, bus, index, 'peripheral')
         self.add_service_uuid('180D')
         self.add_service_uuid('180F')
-        self.add_manufacturer_data(0xffff, [id, battery, threshold])
+        self.add_manufacturer_data(0xffff, message)
         self.add_service_data('9999', [0x00, 0x01, 0x02, 0x03, 0x04])
         self.add_local_name('BJPT')
         self.include_tx_power = True
@@ -174,7 +174,7 @@ def shutdown(timeout):
     mainloop.quit()
 
 
-def advertise(id, batteryUsage, threshold, timeout=0):
+def advertise(message, timeout=10):
     global mainloop
 
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
@@ -193,7 +193,7 @@ def advertise(id, batteryUsage, threshold, timeout=0):
     ad_manager = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, adapter),
                                 LE_ADVERTISING_MANAGER_IFACE)
 
-    test_advertisement = TestAdvertisement(bus, 0, id, batteryUsage, threshold)
+    test_advertisement = TestAdvertisement(bus, 0, message)
 
     mainloop = GObject.MainLoop()
 
