@@ -42,12 +42,11 @@ async def main():
               print("Threshold is: " + str(Threshold))
     
     PreviousLeader = LeaderID
-    if LeaderID == UNKNOWN_LEADER or LeaderID == myID:
+    if LeaderID == myID:
       BatteryUsage -= 10
-      if PreviousLeader == myID:
-        Threshold -=10
-      LeaderID = PreviousLeader
-      
+    if PreviousLeader == myID and LeaderID == UNKNOWN_LEADER:
+      LeaderID = myID
+      Threshold -=10
     
     print("The Leader address is : " + str(LeaderName) + " and it's  Id : " + str(LeaderID))
     print("Battery threshold is : " + str(Threshold))
