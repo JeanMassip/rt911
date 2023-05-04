@@ -35,8 +35,6 @@ async def main():
           data = d.details['props']['ManufacturerData'][0xffff]
           id = data[0]
           battery = data[1]
-          if id == LeaderID:
-            Threshold = data[2]
           if battery >= Threshold:
             if id < LeaderID:
               LeaderID = id
@@ -45,12 +43,10 @@ async def main():
     
     if LeaderID == UNKNOWN_LEADER:
       LeaderID = PreviousLeader
+      Threshold -= 10
     
     if LeaderID == myID:
       BatteryUsage -= 10
-    
-    if PreviousLeader == myID and myID == LeaderID:
-      Threshold -= 10
 
     PreviousLeader = LeaderID
 
