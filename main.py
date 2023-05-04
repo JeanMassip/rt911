@@ -44,16 +44,16 @@ async def main():
   BatteryUsage = 80
 
   while True:
-    leaderID = elect_leader()
+    leaderID = await elect_leader()
     PreviousLeader = leaderID
 
-    if LeaderID == UNKNOWN_LEADER:
+    if leaderID == UNKNOWN_LEADER:
       BatteryUsage -= 10
       if PreviousLeader == myID:
         Threshold -=10
         elect_leader()
     
-    print("The Leader address is : " + str(LeaderName) + " and it's  Id : " + str(LeaderID))
+    print("The Leader address is : " + str(LeaderName) + " and it's  Id : " + str(leaderID))
     print("Battery threshold is : " + str(Threshold))
     print("Current battery: " + str(BatteryUsage))
     time.sleep(10)
