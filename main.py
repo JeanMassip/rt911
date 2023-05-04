@@ -8,15 +8,15 @@ from bleak import BleakScanner
 from advertisement import advertise
 
 async def main():
-    myID = 0
-    PreviousLeader = -1
-    LeaderID = myID
-    LeaderName = "ME"
-    Threshold = 80
-    BatteryUsage = 80
+  myID = 0
+  PreviousLeader = -1
+  LeaderID = myID
+  LeaderName = "ME"
+  Threshold = 80
+  BatteryUsage = 80
 
+  while True:
     emit = threading.Thread(target=advertise, args=(myID, BatteryUsage, Threshold, 40,))
-   
     print("Start emitting...")
     emit.start()
 
@@ -32,14 +32,16 @@ async def main():
                     LeaderID = id
                     LeaderName = d.address
                     Threshold = data[2]
+                    print("Threshold is: " + str(Threshold))
     
     PreviousLeader == LeaderID
     if LeaderID == myID:
         BatteryUsage -= 10
         if PreviousLeader == myID:
             Threshold -=10
-    
-    print("The Leader is : " + str(LeaderName) + " Id : " + str(LeaderID))
+  
+  print("The Leader address is : " + str(LeaderName) + " and it's Id : " + str(LeaderID))
+  time.sleep(30)
 
 
 
