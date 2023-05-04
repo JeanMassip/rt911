@@ -10,7 +10,6 @@ from advertisement import advertise
 async def main():
   myID = 0
   PreviousLeader = -1
-  LeaderID = myID
   LeaderName = "ME"
   Threshold = 80
   BatteryUsage = 80
@@ -23,6 +22,10 @@ async def main():
 
     print("Start discovering...")
     devices = await BleakScanner.discover(timeout=10)
+    if BatteryUsage < Threshold:
+      LeaderID = 256
+    else :
+      LeaderID = myID
     for d in devices:
         if d.name == 'BJPT':
           data = d.details['props']['ManufacturerData'][0xffff]
