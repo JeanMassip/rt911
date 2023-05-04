@@ -42,6 +42,8 @@ async def main():
         Threshold -=10
     
     print("The Leader address is : " + str(LeaderName) + " and it's  Id : " + str(LeaderID))
+    print("Battery threshold is : " + str(Threshold))
+    print("Current battery: " + str(BatteryUsage))
     time.sleep(10)
 
 
