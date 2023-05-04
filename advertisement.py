@@ -174,7 +174,7 @@ def shutdown(timeout):
     mainloop.quit()
 
 
-def advertise(timeout=0):
+def advertise(id, batteryUsage, threshold, timeout=0):
     global mainloop
 
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
