@@ -40,9 +40,9 @@ async def main():
       BatteryUsage -= 10
       if PreviousLeader == myID:
         Threshold -=10
-  
-  print("The Leader address is : " + str(LeaderName) + " and it's  Id : " + str(LeaderID))
-  time.sleep(10)
+    
+    print("The Leader address is : " + str(LeaderName) + " and it's  Id : " + str(LeaderID))
+    time.sleep(10)
 
 
 
