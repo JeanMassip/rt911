@@ -49,7 +49,7 @@ async def main():
     if LeaderID == myID:
       BatteryUsage -= 10
     
-    if PreviousLeader == myID:
+    if PreviousLeader == myID and myID == LeaderID:
       Threshold -= 10
 
     PreviousLeader = LeaderID
