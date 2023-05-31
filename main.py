@@ -41,12 +41,15 @@ def send_data(id, batteryUsage):
   start = 0
   end = len(data)
   step = 22
+  max_message = data / step
+  counter = 1
   for i in range(start, end, step):
       x = i
-      chunk = data[x:x+step]
+      chunk = [counter, max_message] + data[x:x+step]
       chunk_bytes = bytes(chunk)
       print(chunk_bytes)
-      advertise(chunk_bytes)
+      counter += 1
+      advertise(chunk_bytes, 1)
 
 
 def reconstruction_message():
@@ -63,7 +66,7 @@ async def main():
   send_data(myID, BatteryUsage)
   if okay:
     while True:
-      emit = threading.Thread(target=advertise, args=(myID, BatteryUsage, Threshold, 10,))
+      emit = threading.Thread(target=send_data, args=(myID, BatteryUsage,))
       print("Start emitting...")
       emit.daemon = True
       emit.start()
