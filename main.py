@@ -5,14 +5,23 @@ import os
 import asyncio
 import OpenSSL
 
+from math import ceil
 from bleak import BleakScanner
 from advertisement import advertise
 
 UNKNOWN_LEADER = 256
 SLEEP_TIME = 10
 
+messages_buffer = []
+messages_reconstruits = []
+
 def on_device_discovery_callback(device, advertisement_data):
   print(str(device) + ' ' + str(advertisement_data))
+
+def generate_keys():
+  keypair = OpenSSL.crypto.PKey()
+  keypair.generate_key(type=OpenSSL.crypto.TYPE_RSA, bits=2048)
+  print("toto", keypair)
 
 def sign_message(message):
   key_file = open("./privkey.pem", "r")
@@ -41,19 +50,35 @@ def send_data(id, batteryUsage):
   start = 0
   end = len(data)
   step = 22
-  max_message = data / step
+  max_message = ceil(len(data) / step)
   counter = 1
   for i in range(start, end, step):
       x = i
       chunk = [counter, max_message] + data[x:x+step]
+      print("chunk en cours ~ ", chunk)
       chunk_bytes = bytes(chunk)
       print(chunk_bytes)
       counter += 1
       advertise(chunk_bytes, 1)
 
 
-def reconstruction_message():
-  print("Reconstruction message")
+def reconstruction_message(device, advertisement_data):
+  if device.name == 'BJPT':
+    print("Reconstruction message")
+    data = advertisement_data['ManufacturerData'][0xffff]
+    addr = device.address
+    fragment_number = data[0]
+    fragment_total = data[1]
+
+    # Remplacement du fragment du message 
+    messages_buffer[addr][fragment_number] = data[2:]
+
+    # Test si message complet
+    if all(messages_buffer[0:fragment_total]):
+      messages_reconstruits[addr] = messages_buffer[addr][0:fragment_total].concatenate()
+      print("message reconstruit ! ~ ", messages_reconstruits[addr], " @ ", addr )
+      # Nettoyage buffer si message complet
+      messages_buffer[addr] = []
 
 async def main():
   myID = 0
