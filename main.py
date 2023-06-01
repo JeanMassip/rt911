@@ -100,9 +100,9 @@ async def main():
     
     i = 0
     while (i < 6):
-      await scanner.start()
-      await asyncio.sleep(10)
-      await scanner.stop()
+      scanner.start()
+      asyncio.sleep(10)
+      scanner.stop()
       i += 1
 
     if BatteryUsage < Threshold:
