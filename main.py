@@ -15,9 +15,7 @@ SLEEP_TIME = 10
 
 messages_buffer = {}
 messages_reconstruit = {}
-
-def on_device_discovery_callback(device, advertisement_data):
-  print(str(device) + ' ' + str(advertisement_data))
+devices = []
 
 def sign_message(message):
   key_file = open("./privkey.pem", "r")
@@ -85,48 +83,46 @@ async def main():
   LeaderName = "ME"
   Threshold = 80
   BatteryUsage = 80
-  okay = False
 
   send_data(myID, BatteryUsage)
-  if okay:
-    while True:
-      emit = threading.Thread(target=send_data, args=(myID, BatteryUsage,))
-      print("Start emitting...")
-      emit.daemon = True
-      emit.start()
+  while True:
+    emit = threading.Thread(target=send_data, args=(myID, BatteryUsage,))
+    print("Start emitting...")
+    emit.daemon = True
+    emit.start()
 
-      print("Start discovering...")
-      scanner = BleakScanner(on_device_discovery_callback)
-      devices = await BleakScanner.discover(timeout=10)
-      if BatteryUsage < Threshold:
-        LeaderID = UNKNOWN_LEADER
-      else :
-        LeaderID = myID
+    print("Start discovering...")
+    scanner = BleakScanner(on_device_discovery_callback)
+    
+    if BatteryUsage < Threshold:
+      LeaderID = UNKNOWN_LEADER
+    else :
+      LeaderID = myID
 
-      for d in devices:
-          if d.name == 'BJPT':
-            data = d.details['props']['ManufacturerData'][0xffff]
-            id = data[0]
-            battery = data[1]
-            if battery >= Threshold:
-              if id < LeaderID:
-                LeaderID = id
-                LeaderName = d.address
-                print("Threshold is: " + str(Threshold))
-      
-      if LeaderID == UNKNOWN_LEADER:
-        LeaderID = PreviousLeader
-        Threshold -= 10
-      
-      if LeaderID == myID:
-        BatteryUsage -= 10
+    for d in devices:
+        if d.name == 'BJPT':
+          data = d.details['props']['ManufacturerData'][0xffff]
+          id = data[0]
+          battery = data[1]
+          if battery >= Threshold:
+            if id < LeaderID:
+              LeaderID = id
+              LeaderName = d.address
+              print("Threshold is: " + str(Threshold))
+    
+    if LeaderID == UNKNOWN_LEADER:
+      LeaderID = PreviousLeader
+      Threshold -= 10
+    
+    if LeaderID == myID:
+      BatteryUsage -= 10
 
-      PreviousLeader = LeaderID
+    PreviousLeader = LeaderID
 
-      print("The Leader address is : " + str(LeaderName) + " and it's  Id : " + str(LeaderID))
-      print("Battery threshold is : " + str(Threshold))
-      print("Current battery: " + str(BatteryUsage))
-      time.sleep(10)
+    print("The Leader address is : " + str(LeaderName) + " and it's  Id : " + str(LeaderID))
+    print("Battery threshold is : " + str(Threshold))
+    print("Current battery: " + str(BatteryUsage))
+    time.sleep(10)
 
 
 
