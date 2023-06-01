@@ -145,7 +145,7 @@ class TestAdvertisement(Advertisement):
 
 
 def register_ad_cb():
-    print('Advertisement registered')
+    return
 
 
 def register_ad_error_cb(error):
