@@ -59,10 +59,12 @@ def send_data(id, batteryUsage):
         time.sleep(2)
 
 
-def reconstruction_message(device, advertisement_data):
+def on_device_discovery_callback(device, advertisement_data):
+  # Print details about device and the advertisement packet it sent out
+  # print("toto", advertisement_data)
   if device.name == 'BJPT':
-    print("Fonction reconstruction message")
-    data = list(advertisement_data.manufacturer_data[0xffff])
+    # print("Fonction reconstruction message", advertisement_data.service_data['00009999-0000-1000-8000-00805f9b34fb'])
+    data = list(advertisement_data.service_data['00009999-0000-1000-8000-00805f9b34fb'])
     print("data", data)
     addr = device.address
     fragment_number = data[0]
