@@ -50,7 +50,6 @@ def send_data(id, batteryUsage):
     for i in range(start, end, step):
         x = i
         message = [counter, max_message] + data[x:x+step]
-        print("chunk en cours ~ ", message, " ~ end")
         chunk_bytes = bytes(message)
         counter += 1
         advertise(chunk_bytes, 0.1)
@@ -131,7 +130,7 @@ async def main():
     print("The Leader address is : " + str(LeaderName) + " and it's  Id : " + str(LeaderID))
     print("Battery threshold is : " + str(Threshold))
     print("Current battery: " + str(BatteryUsage))
-    time.sleep(10)
+    time.sleep(60)
 
 
 

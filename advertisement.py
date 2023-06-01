@@ -121,10 +121,8 @@ class Advertisement(dbus.service.Object):
                          in_signature='s',
                          out_signature='a{sv}')
     def GetAll(self, interface):
-        print('GetAll')
         if interface != LE_ADVERTISEMENT_IFACE:
             raise InvalidArgsException()
-        print('returning props')
         return self.get_properties()[LE_ADVERTISEMENT_IFACE]
 
     @dbus.service.method(LE_ADVERTISEMENT_IFACE,
@@ -168,7 +166,6 @@ def find_adapter(bus):
 
 
 def shutdown(timeout):
-    print('Advertising for {} seconds...'.format(timeout))
     time.sleep(timeout)
     mainloop.quit()
 
@@ -208,5 +205,4 @@ def advertise(message, timeout=10):
     mainloop.run()  # blocks until mainloop.quit() is called
 
     ad_manager.UnregisterAdvertisement(test_advertisement)
-    print('Advertisement unregistered')
     dbus.service.Object.remove_from_connection(test_advertisement)
