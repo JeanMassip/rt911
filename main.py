@@ -54,8 +54,7 @@ def send_data(id, batteryUsage):
         print("chunk en cours ~ ", message, " ~ end")
         chunk_bytes = bytes(message)
         counter += 1
-        advertise(chunk_bytes, 1)
-        time.sleep(2)
+        advertise(chunk_bytes, 0.1)
 
 
 def on_device_discovery_callback(device, advertisement_data):
