@@ -88,8 +88,7 @@ async def main():
   LeaderName = "ME"
   Threshold = 80
   BatteryUsage = 80
-
-  send_data(myID, BatteryUsage)
+  
   while True:
     emit = threading.Thread(target=send_data, args=(myID, BatteryUsage,))
     print("Start emitting...")
@@ -98,7 +97,13 @@ async def main():
 
     print("Start discovering...")
     scanner = BleakScanner(on_device_discovery_callback)
-    await scanner.start()
+    
+    i = 0
+    while (i < 6):
+      await scanner.start()
+      await asyncio.sleep(10)
+      await scanner.stop()
+      i += 1
 
     if BatteryUsage < Threshold:
       LeaderID = UNKNOWN_LEADER
