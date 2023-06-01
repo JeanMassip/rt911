@@ -16,9 +16,6 @@ SLEEP_TIME = 10
 messages_buffer = {}
 messages_reconstruit = {}
 
-def on_device_discovery_callback(device, advertisement_data):
-  print(str(device) + ' ' + str(advertisement_data))
-
 def sign_message(message):
   key_file = open("./privkey.pem", "r")
   key = key_file.read()
@@ -77,9 +74,14 @@ def on_device_discovery_callback(device, advertisement_data):
 
     # Test si message complet
     if all(i!= -1 for i in messages_buffer[addr][0:fragment_total]) :
-      messages_reconstruit[addr] = list(itertools.chain.from_iterable(messages_buffer[addr][0:fragment_total]))
+      msg_tmp = list(itertools.chain.from_iterable(messages_buffer[addr][0:fragment_total]))
       print("message reconstruit ! ~ ", messages_reconstruit[addr], " @ ", addr )
       messages_buffer[addr] = [-1] * fragment_total
+      # Vérification de la signature du message
+      if verify_signature(messages_reconstruit[:1],messages_reconstruit[2:]):
+        messages_reconstruit[addr] = msg_tmp
+      else :
+        print("Signature message invalide", addr)
 
 async def main():
   myID = 0
