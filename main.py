@@ -98,7 +98,7 @@ async def main():
 
     print("Start discovering...")
     scanner = BleakScanner(on_device_discovery_callback)
-    devices = await scanner.start()
+    await scanner.start()
 
     if BatteryUsage < Threshold:
       LeaderID = UNKNOWN_LEADER
