@@ -18,11 +18,6 @@ messages_reconstruits = []
 def on_device_discovery_callback(device, advertisement_data):
   print(str(device) + ' ' + str(advertisement_data))
 
-def generate_keys():
-  keypair = OpenSSL.crypto.PKey()
-  keypair.generate_key(type=OpenSSL.crypto.TYPE_RSA, bits=2048)
-  print("toto", keypair)
-
 def sign_message(message):
   key_file = open("./privkey.pem", "r")
   key = key_file.read()
@@ -49,7 +44,7 @@ def send_data(id, batteryUsage):
   print(data)
   start = 0
   end = len(data)
-  step = 22
+  step = 20
   max_message = ceil(len(data) / step)
   counter = 1
   for i in range(start, end, step):
@@ -60,6 +55,7 @@ def send_data(id, batteryUsage):
       print(chunk_bytes)
       counter += 1
       advertise(chunk_bytes, 1)
+      time.sleep(1)
 
 
 def reconstruction_message(device, advertisement_data):
