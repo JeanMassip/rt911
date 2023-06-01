@@ -101,7 +101,7 @@ async def main():
     i = 0
     while (i < 6):
       scanner.start()
-      asyncio.sleep(10)
+      time.sleep(10)
       scanner.stop()
       i += 1
 
