@@ -15,10 +15,6 @@ SLEEP_TIME = 10
 
 messages_buffer = {}
 messages_reconstruit = {}
-<<<<<<< HEAD
-devices = []
-=======
->>>>>>> db2ebd6c7947939ab40f1fa2267d24dd2edc7341
 
 def sign_message(message):
   key_file = open("./privkey.pem", "r")
