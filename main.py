@@ -97,22 +97,21 @@ async def main():
 
     print("Start discovering...")
     scanner = BleakScanner(on_device_discovery_callback)
-    
+    devices = await scanner.start()
+
     if BatteryUsage < Threshold:
       LeaderID = UNKNOWN_LEADER
     else :
       LeaderID = myID
 
-    for d in devices:
-        if d.name == 'BJPT':
-          data = d.details['props']['ManufacturerData'][0xffff]
-          id = data[0]
-          battery = data[1]
-          if battery >= Threshold:
-            if id < LeaderID:
-              LeaderID = id
-              LeaderName = d.address
-              print("Threshold is: " + str(Threshold))
+    for addr, data in messages_reconstruit:
+      id = data[0]
+      battery = data[1]
+      if battery >= Threshold:
+        if id < LeaderID:
+          LeaderID = id
+          LeaderName = addr
+          print("Threshold is: " + str(Threshold))
     
     if LeaderID == UNKNOWN_LEADER:
       LeaderID = PreviousLeader
