@@ -12,8 +12,8 @@ from advertisement import advertise
 UNKNOWN_LEADER = 256
 SLEEP_TIME = 10
 
-messages_buffer = []
-messages_reconstruits = []
+messages_buffer = {}
+messages_reconstruit = {}
 
 def on_device_discovery_callback(device, advertisement_data):
   print(str(device) + ' ' + str(advertisement_data))
@@ -47,34 +47,36 @@ def send_data(id, batteryUsage):
   step = 20
   max_message = ceil(len(data) / step)
   counter = 1
-  for i in range(start, end, step):
-      x = i
-      chunk = [counter, max_message] + data[x:x+step]
-      print("chunk en cours ~ ", chunk)
-      chunk_bytes = bytes(chunk)
-      print(chunk_bytes)
-      counter += 1
-      advertise(chunk_bytes, 1)
-      time.sleep(1)
+  for j in range(1,10):
+    for i in range(start, end, step):
+        x = i
+        chunk = [counter, max_message] + data[x:x+step]
+        print("chunk en cours ~ ", chunk, " ~ end")
+        chunk_bytes = bytes(chunk)
+        print(chunk_bytes)
+        counter += 1
+        advertise(chunk, 1)
+        time.sleep(2)
 
 
 def reconstruction_message(device, advertisement_data):
   if device.name == 'BJPT':
-    print("Reconstruction message")
-    data = advertisement_data['ManufacturerData'][0xffff]
+    print("Fonction reconstruction message")
+    data = list(advertisement_data.manufacturer_data[0xffff])
+    print("data", data)
     addr = device.address
     fragment_number = data[0]
     fragment_total = data[1]
-
     # Remplacement du fragment du message 
-    messages_buffer[addr][fragment_number] = data[2:]
+    if not addr in messages_buffer:
+        messages_buffer[addr] = [-1] * fragment_total
+    messages_buffer[addr][fragment_number-1] = data[2:]
 
     # Test si message complet
-    if all(messages_buffer[0:fragment_total]):
-      messages_reconstruits[addr] = messages_buffer[addr][0:fragment_total].concatenate()
-      print("message reconstruit ! ~ ", messages_reconstruits[addr], " @ ", addr )
-      # Nettoyage buffer si message complet
-      messages_buffer[addr] = []
+    if all(i!= -1 for i in messages_buffer[addr][0:fragment_total]) :
+      messages_reconstruit[addr] = list(itertools.chain.from_iterable(messages_buffer[addr][0:fragment_total]))
+      print("message reconstruit ! ~ ", messages_reconstruit[addr], " @ ", addr )
+      messages_buffer[addr] = [-1] * fragment_total
 
 async def main():
   myID = 0
@@ -93,7 +95,7 @@ async def main():
       emit.start()
 
       print("Start discovering...")
-      scanner = BleakScanner(detection_callback=device_found, )
+      scanner = BleakScanner(on_device_discovery_callback)
       devices = await BleakScanner.discover(timeout=10)
       if BatteryUsage < Threshold:
         LeaderID = UNKNOWN_LEADER
