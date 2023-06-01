@@ -4,6 +4,7 @@ import time
 import os
 import asyncio
 import OpenSSL
+import itertools
 
 from math import ceil
 from bleak import BleakScanner
