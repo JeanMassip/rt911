@@ -42,7 +42,7 @@ def send_data(id, batteryUsage):
 
   start = 0
   end = len(data)
-  step = 20
+  step = 10
   max_message = ceil(len(data) / step)
   counter = 1
   for j in range(1,10):
