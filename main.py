@@ -41,7 +41,7 @@ def send_data(id, batteryUsage):
   data = [id, batteryUsage]
   signature = sign_message(bytes(data))
   data = data + list(signature)
-  print(data)
+
   start = 0
   end = len(data)
   step = 20
@@ -50,12 +50,11 @@ def send_data(id, batteryUsage):
   for j in range(1,10):
     for i in range(start, end, step):
         x = i
-        chunk = [counter, max_message] + data[x:x+step]
-        print("chunk en cours ~ ", chunk, " ~ end")
-        chunk_bytes = bytes(chunk)
-        print(chunk_bytes)
+        message = [counter, max_message] + data[x:x+step]
+        print("chunk en cours ~ ", message, " ~ end")
+        chunk_bytes = bytes(message)
         counter += 1
-        advertise(chunk, 1)
+        advertise(chunk_bytes, 1)
         time.sleep(2)
 
 
