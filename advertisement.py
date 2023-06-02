@@ -1,6 +1,11 @@
+"""
+Fichier contenant les structures ainsi que les fonctions permettant de créer et d'émettre un advertising en BLE
+
+La fonction advertisement est utilisé dans main.py pour l'envoie en advertising BLE des messages
+"""
+
 from __future__ import print_function
 
-import argparse
 import dbus
 import dbus.exceptions
 import dbus.mainloop.glib
@@ -169,7 +174,11 @@ def shutdown(timeout):
     time.sleep(timeout)
     mainloop.quit()
 
-
+""" Fonction utilisée pour l'envoie d'un message en BLE dans le champ uuid de l'advertising
+ Args : 
+   message : donnée à broadcaster
+   timeout : durée de l'advertising
+"""
 def advertise(message, timeout=10):
     global mainloop
 
